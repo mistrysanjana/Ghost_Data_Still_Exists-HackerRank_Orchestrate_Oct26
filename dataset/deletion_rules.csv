@@ -1,16 +1,76 @@
-rule_id,data_category,condition,required_action
-rule_01,USER_PROFILE,Always,DELETE
-rule_02,SECONDARY_IDENTIFIER,Always,DELETE
-rule_03,SEARCH_INDEX_ENTRY,Always,DELETE
-rule_04,CACHE_ENTRY,Always,DELETE
-rule_05,SUPPORT_MESSAGE,"Conversation contains shared customer, agent, or order context that must be retained",REDACT
-rule_06,SUPPORT_ATTACHMENT,Attachment belongs only to the deletion subject,DELETE
-rule_07,ANALYTICS_PROFILE,Record is still attributable to a user,ANONYMIZE
-rule_08,PRODUCT_TELEMETRY,Record is still attributable to a user,ANONYMIZE
-rule_09,USER_EXPORT,Always,DELETE
-rule_10,MARKETING_PROFILE,Always,DELETE
-rule_11,EMAIL_DELIVERY_LOG,Log contains a user email address,REDACT
-rule_12,SECURITY_AUDIT_LOG,Record is within the supplied retention period,RETAIN
-rule_13,LEGAL_HOLD_RECORD,A supplied legal hold is active,RETAIN
-rule_14,BACKUP_ARCHIVE,Restore access can be blocked,RETAIN
-rule_15,ACCOUNT_TOMBSTONE,Account is deleted and only a stable internal user_id is needed to preserve references to retained records,REDACT
+import 'package:flutter/material.dart';
+
+void main() => runApp(MyApp());
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(title: Text('Form Example')),
+        body: Padding(
+          padding: EdgeInsets.all(16),
+          child: FormWidget(),
+        ),
+      ),
+    );
+  }
+}
+
+class FormWidget extends StatefulWidget {
+  @override
+  State<FormWidget> createState() => FormWidgetState();
+}
+
+class FormWidgetState extends State<FormWidget> {
+  final _formKey = GlobalKey<FormState>();
+
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+      key: _formKey,
+      child: Column(
+        children: [
+          TextFormField(
+            decoration: InputDecoration(labelText: 'Name'),
+            validator: (v) =>
+                v == null || v.isEmpty ? 'Enter your name' : null,
+          ),
+          TextFormField(
+            decoration: InputDecoration(labelText: 'Email'),
+            validator: (v) =>
+                v == null || !v.contains('@') ? 'Enter valid email' : null,
+          ),
+          TextFormField(
+            decoration: InputDecoration(labelText: 'Password'),
+            obscureText: true,
+            validator: (v) =>
+                v == null || v.length < 6 ? 'Enter 6 characters' : null,
+          ),
+          TextFormField(
+            decoration: InputDecoration(labelText: 'Phone'),
+            keyboardType: TextInputType.phone,
+            validator: (v) =>
+                v == null || v.length != 10 ? 'Enter valid phone' : null,
+          ),
+          TextFormField(
+            decoration: InputDecoration(labelText: 'Address'),
+            validator: (v) =>
+                v == null || v.isEmpty ? 'Enter address' : null,
+          ),
+          ElevatedButton(
+            onPressed: () {
+              if (_formKey.currentState!.validate()) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Form submitted successfully')),
+                );
+              }
+            },
+            child: Text('Submit'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
